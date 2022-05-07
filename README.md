@@ -1,46 +1,55 @@
-# Getting Started with Create React App
+# Sophos Denial of Service Attack on Mac OS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Sophos has hampered web developer productivity where I work since the middle
+of February 2022.  Running acceptance tests on front-end React projects using
+WebDriver IO on a Mac is completely blocked by Sophos's scan extension.
 
-## Available Scripts
+Observing the Activity Moniter while testing shows the scan extension dramatically
+leaking ports on the system.  The end result is that the WebDriver logic is unable
+to communicate with Chrome.  The system also becomes sluggish whenever anything attempts
+to work with the file system.
 
-In the project directory, you can run:
+Inasmuch as I cannot share the propriatary code of my employer with Sophos to allow
+them to reproduce the problem.  I created a basic project leveraging Create React App
+and the Web Driver IO generic installations then added additional test cases to mimic
+the number of scenarios my actual project runs.
 
-### `npm start`
+As long as Sophos is running the Ransomware Detection feature, the tests are unable
+to function properly.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Setup
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Node
 
-### `npm test`
+You'll need to install [NodeJS](https://nodejs.org/en/).  The project was built using
+version 16.15.0 (just grab the latest LTS version).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Git & Source
 
-### `npm run build`
+You'll need the project code.  That can be done by installing [git](https://git-scm.com/)
+and cloning the [repository](https://github.com/drewed/sophos-mac-dos) or by [downloading
+the code from Github directly](https://github.com/drewed/sophos-mac-dos/archive/refs/heads/main.zip).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Project Dependencies
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Run `npm run clean` in a terminal from the root of the project to ensure the
+project has the necessary modules installed.
+## Executing the test
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Ensure Sophos is up-to-date and running with "Ransomware Detection (CryptoGuard)" enabled
+3. Run `BROWSER=none npm start` to startup the development web server; leave it running
+4. In a separate terminal, run `npm run wdio`
 
-### `npm run eject`
+### Expected Outcome:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The tests pass successfully in about 12 seconds (this can be verified by
+disabling the Sophos Ransomware Detection feature and re-running the rest
+of the steps).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Actual Outcome:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+All 8 test cases fail as the tests are never able to communicate with Chrome and
+the test server never receives a connection.  It takes about 10 minutes for the
+tests to time out.  Observing the Activity Monitor with ports shown or with
+the detail dialog open on `com.sophos.endpoijnt.scanextension` will show the port
+leaks.

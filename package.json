@@ -23,7 +23,7 @@
     "lint:fix": "npx eslint --fix .",
     "start": "react-scripts start",
     "test": "react-scripts test",
-    "wdio": "cd test && wdio run wdio.conf.ts"
+    "wdio": "wdio run wdio.conf.ts"
   },
   "browserslist": {
     "production": [
